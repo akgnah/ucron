@@ -31,8 +31,8 @@ uCron
 
    --port  指定程序运行的端口，默认为8089。
    --cron  指定定时任务的配置文件，格式见ucron.tab或下文。
-   --dbn   指定一个文件用于Sqlite，或者不提供此参数以使用默认值 :memory:，
-           该值会告诉Sqlite使用内存模式。内存模式非常快，但在程序关闭时会丢失未完成的任务队列。
+   --dbn   指定一个文件用于SQLite，或者不提供此参数以使用默认值 :memory: ，
+           该值会告诉SQLite使用内存模式。内存模式非常快，但在程序关闭时会丢失未完成的任务队列。
    --log   指定一个日志文件，默认为当前目录下的ucron.log。
    --max   指定日志文件的最大行数，默认值为10240。
    --tab   指定清理日志文件的执行周期，默认为每天早上5点。
@@ -55,7 +55,7 @@ uCron
 
 .. code-block:: python
 
-   from ucron add_task
+   from ucron import add_task
 
    body = {'page': i, 'text': '测试'}
    resp = add_task('http://setq.me', body, method='GET')
