@@ -57,7 +57,7 @@ uCron
 
    from ucron import add_task
 
-   body = {'page': i, 'text': '测试'}
+   body = {'page': 1, 'text': '测试'}
    resp = add_task('http://setq.me', body, method='GET')
    print(resp.read())
 
