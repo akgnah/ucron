@@ -26,6 +26,10 @@ uCron
 
 这是最简单的使用方法，然后用浏览器打开 |ucron_home| 将会看到一个简陋的欢迎页面。
 
+.. |ucron_home| raw:: html
+
+   <a href="http://127.0.0.1:8089/" target="_blank">http://127.0.0.1:8089/</a>
+
 运行 python -m ucron -h 可查看全部可用参数。
 ::
 
@@ -37,19 +41,32 @@ uCron
    --max   指定日志文件的最大行数，默认值为10240。
    --tab   指定清理日志文件的执行周期，默认为每天早上5点。
 
+典型的使用方法可能是这样
+
+.. code-block:: python
+
+   python -m ucron --cron ucron.tab
+
+这会读取当前目录下的ucron.tab增加定时任务。指定给参数的文件可为绝对路径或相对路径。
+
 定时任务
 ^^^^^^^^
 
-定时任务的配置文件使用和Crontab类似的格式，每个任务有四个部分，各部分之间用空格分隔。第一部分是执行周期，使用和标准Crontab一致的格式；第二部分是要访问的地址；第三部分是提供给地址的参数，使用 key1=value1&key2=value2 的格式；最后一部分是访问方法，可为GET或POST，默认为GET。前面两个部分必需，后面两个部分可选。因为使用空格分隔各部分，所以URL或参数中不能含有空格。当在运行中修改了该配置文件，需要访问 |ucron_reload| 以使配置生效。
+::
 
+   */2 * * * * http://setq.me/books id=home2&text=测试 GET
 
-这个在线 |crontab_edit| 很有趣。
+这是ucron.tab中的一行，它使用和Crontab类似的格式，每行为一个任务，每个任务有四个部分，使用空格分隔，最后两个部分都为可选。
 
-.. |ucron_home| raw:: html
-   <a href="http://127.0.0.1:8089/" target="_blank">http://127.0.0.1:8089/</a>
+第一部分是执行周期，使用和标准Crontab一致的格式；第二部分是要访问的地址；第三部分是提供给地址的参数，使用 key1=value1&key2=value2 的格式；最后一部分是访问方法，可为GET或POST，默认为GET。
+
+因为使用空格分隔各部分，所以URL或参数中不能含有空格。如果在运行中修改了该配置文件，需要访问 |ucron_reload| 以使配置生效。
 
 .. |ucron_reload| raw:: html
+
    <a href="http://127.0.0.1:8089/reload" target="_blank">http://127.0.0.1:8089/reload</a>
+
+这个在线 |crontab_edit| 很有趣。
 
 .. |crontab_edit| raw:: html
 
@@ -68,4 +85,10 @@ uCron
    resp = add_task('http://setq.me', body, method='GET')
    print(resp.read())
 
-add_task方法可以接受的参数有 path, args, method, host, port。prot默认为8089，当你在运行时指定了该参数，那么你需要提供该值给add_task，你可以修改host参数以访问非本地运行的uCron。path为要访问的地址，args接受一个字典作为传递给path的数据，method可为GET或POST，默认为GET。add_task方法定义在 ext.py 中，它很简单且是该文件中唯一的内容。
+add_task方法接收的参数有 path, args, method, host, port，只有path是必需的，其他均为可选参数。
+
+path为要访问的地址，args是要传递给path的数据，它是一个字典，默认为空字符串，method可为GET或POST，默认为GET。
+
+prot默认为8089，如果你在运行时指定了该参数，那么你需要提供该值给add_task，host参数允许你修改以访问非本地运行的uCron。
+
+add_task方法定义在 ext.py 中，它很简单且是该文件中唯一的内容。
