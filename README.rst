@@ -4,9 +4,9 @@ uCron
 缘起
 ----
 
-小鲸鱼最初运行在本地，在饭否API要求应用改用OAuth认证时，重写并迁移到了新浪SAE。小鲸鱼每隔一段时间会抓取一次Timeline，同时需要按时上下班，所以使用了SAE提供的任务队列和定时任务。如此运行了几年（懒），直到SAE提高了收费标准（小鲸鱼每天消费多了10倍）。试着把数据从MySQL迁移到较便宜的Memcache后（这也是小鲸鱼现在的源码有着在Redis中模拟SQL的怪异行为的原因），消耗仍然过高。最后把小鲸鱼迁移到VPS，因为使用了定时任务和任务队列，同时本着造轮子的原则，写了个简单的task。
+小鲸鱼最初运行在本地，在饭否API要求应用改用 OAuth 认证时，重写并迁移到了新浪SAE。小鲸鱼每隔一段时间会抓取一次 Timeline，同时需要按时上下班，所以使用了 SAE 提供的任务队列和定时任务。如此运行了几年（懒），直到 SAE 提高了收费标准（小鲸鱼每天消费多了 10 倍）。试着把数据从 MySQL 迁移到较便宜的 Memcache 后（这也是小鲸鱼现在的源码有着在 Redis 中模拟 SQL 的怪异行为的原因），消耗仍然过高。最后把小鲸鱼迁移到 VPS，因为使用了定时任务和任务队列，同时本着造轮子的原则，写了个简单的 task。
 
-现在回头看，小鲸鱼的代码写得很糙，那个task反而显得有趣些，于是便把task提出来改成了现在这个小工具。
+现在回头看，小鲸鱼的代码写得很糙，那个 task 反而显得有趣些，于是便把 task 提出来改成了现在这个小工具。
 
 （注：小鲸鱼是饭否上一个问候机器人）
 
@@ -17,7 +17,7 @@ uCron
 
    $ sudo pip install ucron
 
-程序依赖 six 和 bottle，在Win10上，Python2.7和3.6测试通过，在Archlinux上，Python2.7和3.3+测试通过。
+程序依赖 six 和 bottle，在 Win10 上，Python2.7 和 3.6 测试通过，在 Archlinux 上，Python2.7 和 3.3+ 测试通过。
 
 使用
 ----
@@ -30,18 +30,18 @@ uCron
 
 .. |ucron_home| raw:: html
 
-   <a href="http://127.0.0.1:8089/" target="_blank">http://127.0.0.1:8089/</a>
+   <a href="http://127.0.0.1:8089/" target="_blank"> http://127.0.0.1:8089/ </a>
 
 运行 python -m ucron -h 可查看全部可用参数。
 ::
 
-   --port  指定程序运行的端口，默认为8089。
-   --cron  指定定时任务的配置文件，格式见ucron.tab或下文。
-   --dbn   指定一个文件用于SQLite，或者不提供此参数以使用默认值 :memory: ，
-           该值会告诉SQLite使用内存模式。内存模式非常快，但在程序关闭时会丢失未完成的任务队列。
-   --log   指定一个日志文件，默认为当前目录下的ucron.log。
-   --max   指定日志文件的最大行数，默认值为10240。
-   --tab   指定清理日志文件的执行周期，默认为每天早上5点。
+   --port  指定程序运行的端口，默认为 8089。
+   --cron  指定定时任务的配置文件，格式见 ucron.tab 或下文。
+   --dbn   指定一个文件用于 SQLite，或者不提供此参数以使用默认值 :memory:，
+           该值会告诉 SQLite 使用内存模式。内存模式非常快，但在程序关闭时会丢失未完成的任务队列。
+   --log   指定一个日志文件，默认为当前目录下的 ucron.log。
+   --max   指定日志文件的最大行数，默认值为 10240。
+   --tab   指定清理日志文件的执行周期，默认为每天早上 5 点。
 
 典型的使用方法可能是这样
 
@@ -49,7 +49,7 @@ uCron
 
    python -m ucron --cron ucron.tab
 
-这会读取当前目录下的ucron.tab增加定时任务。指定给参数的文件可为绝对路径或相对路径。
+这会读取当前目录下的 ucron.tab 增加定时任务。指定给参数的文件可为绝对路径或相对路径。
 
 定时任务
 ^^^^^^^^
@@ -58,21 +58,21 @@ uCron
 
    */2 * * * * http://setq.me/books id=home2&text=测试 GET
 
-这是ucron.tab中的一行，它使用和Crontab类似的格式，每行为一个任务，每个任务有四个部分，使用空格分隔，最后两个部分都为可选。
+这是 ucron.tab 中的一行，它使用和 Crontab 类似的格式，每行为一个任务，每个任务有四个部分，使用空格分隔，最后两个部分都为可选。
 
-第一部分是执行周期，使用和标准Crontab一致的格式；第二部分是要访问的地址；第三部分是提供给地址的参数，使用 key1=value1&key2=value2 的格式；最后一部分是访问方法，可为GET或POST，默认为GET。
+第一部分是执行周期，使用和标准 Crontab 一致的格式；第二部分是要访问的地址；第三部分是提供给地址的参数，使用 key1=value1&key2=value2 的格式；最后一部分是访问方法，可为 GET 或 POST，默认为 GET。
 
-因为使用空格分隔各部分，所以URL或参数中不能含有空格。如果在运行中修改了该配置文件，需要访问 |ucron_reload| 以使配置生效。还有一点很重要，请使用 UTF-8 编码保存ucron.tab。
+因为使用空格分隔各部分，所以 URL 或参数中不能含有空格。如果在运行中修改了该配置文件，需要访问 |ucron_reload| 以使配置生效。还有一点很重要，请使用 UTF-8 编码保存 ucron.tab。
 
 .. |ucron_reload| raw:: html
 
-   <a href="http://127.0.0.1:8089/reload" target="_blank">http://127.0.0.1:8089/reload</a>
+   <a href="http://127.0.0.1:8089/reload" target="_blank"> http://127.0.0.1:8089/reload </a>
 
 这个在线 |crontab_edit| 很有趣。
 
 .. |crontab_edit| raw:: html
 
-   <a href="https://crontab.guru/" target="_blank">Crontab编辑器</a>
+   <a href="https://crontab.guru/" target="_blank"> Crontab 编辑器</a>
 
 任务队列
 ^^^^^^^^
@@ -87,13 +87,13 @@ uCron
    resp = add_task('http://setq.me', body, method='GET')
    print(resp.read())
 
-add_task方法接收的参数有 path, args, method, host, port，只有path是必需的，其他均为可选参数。
+add_task 方法接收的参数有 path, args, method, host, port，只有 path 是必需的，其他均为可选参数。
 
-path为要访问的地址，args是要传递给path的数据，它是一个字典，默认为空字符串，method可为GET或POST，默认为GET。
+path 为要访问的地址，args 是要传递给 path 的数据，它是一个字典，默认为空字符串，method 可为 GET 或 POST，默认为 GET。
 
-prot默认为8089，如果你在运行时指定了该参数，那么你需要提供该值给add_task，host参数允许你修改以访问非本地运行的uCron。
+pro t默认为 8089，如果你在运行时指定了该参数，那么你需要提供该值给 add_task，host 参数允许你修改以访问非本地运行的 uCron。
 
-add_task方法定义在 ext.py 中，它很简单且是该文件中唯一的内容。
+add_task 方法定义在 ext.py 中，它很简单且是该文件中唯一的内容。
 
 
 杂项
@@ -101,7 +101,7 @@ add_task方法定义在 ext.py 中，它很简单且是该文件中唯一的内�
 
 目前任务队列只有简单的顺序队列，以后不一定会增加并发队列。
 
-若有任何问题，可以Email联系我。若你是饭否居民，还可以@ |home2| 。
+若有任何问题，可以 Email 联系我。若你是饭否居民，还可以 @ |home2| 。
 
 .. |home2| raw:: html
 
