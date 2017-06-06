@@ -15,7 +15,7 @@ uCron
 
    $ sudo pip install ucron
 
-程序依赖 six 和 bottle，在Linux和Win10上，Python2.7和3.6测试通过。
+程序依赖 six 和 bottle，在Win10上，Python2.7和3.6测试通过，在Archlinux上，Python2.7和3.3+测试通过。
 
 使用
 ----
