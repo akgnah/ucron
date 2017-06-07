@@ -1,6 +1,8 @@
 uCron
 =====
 
+uCron 是一个微型的执行定时任务（Crontab）和任务队列（Taskqueue）的小工具，易于安装和运行，配置简单且依赖少。
+
 缘起
 ----
 
@@ -33,6 +35,7 @@ uCron
    <a href="http://127.0.0.1:8089/" target="_blank"> http://127.0.0.1:8089/ </a>
 
 运行 python -m ucron -h 可查看全部可用参数。
+
 ::
 
    --port  指定程序运行的端口，默认为 8089。
