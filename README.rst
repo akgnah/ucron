@@ -63,7 +63,7 @@ uCron 是一个微型的执行定时任务（Crontab）和任务队列（Taskque
 
 因为使用空格分隔各部分，所以 URL 或参数中不能含有空格。如果在运行中修改了该配置文件，需要访问 `http://127.0.0.1:8089/reload` 以使配置生效。还有一点很重要，请使用 UTF-8 编码保存 ucron.tab。
 
-这个在线 `Crontab 编辑器 <https://crontab.guru/>`_. 很有趣。
+这个在线 `Crontab 编辑器 <https://crontab.guru/>`_ 很有趣。
 
 
 任务队列
