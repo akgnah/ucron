@@ -28,11 +28,7 @@ uCron 是一个微型的执行定时任务（Crontab）和任务队列（Taskque
 
    python -m ucron
 
-这是最简单的使用方法，然后用浏览器打开 |ucron_home| 将会看到一个简陋的欢迎页面。
-
-.. |ucron_home| raw:: html
-
-   <a href="http://127.0.0.1:8089/" target="_blank"> http://127.0.0.1:8089/ </a>
+这是最简单的使用方法，然后用浏览器打开 `http://127.0.0.1:8089/` 将会看到一个简陋的欢迎页面。
 
 运行 python -m ucron -h 可查看全部可用参数。
 
@@ -65,17 +61,10 @@ uCron 是一个微型的执行定时任务（Crontab）和任务队列（Taskque
 
 第一部分是执行周期，使用和标准 Crontab 一致的格式；第二部分是要访问的地址；第三部分是提供给地址的参数，使用 key1=value1&key2=value2 的格式；最后一部分是访问方法，可为 GET 或 POST，默认为 GET。
 
-因为使用空格分隔各部分，所以 URL 或参数中不能含有空格。如果在运行中修改了该配置文件，需要访问 |ucron_reload| 以使配置生效。还有一点很重要，请使用 UTF-8 编码保存 ucron.tab。
+因为使用空格分隔各部分，所以 URL 或参数中不能含有空格。如果在运行中修改了该配置文件，需要访问 `http://127.0.0.1:8089/reload` 以使配置生效。还有一点很重要，请使用 UTF-8 编码保存 ucron.tab。
 
-.. |ucron_reload| raw:: html
+这个在线 `Crontab 编辑器 <https://crontab.guru/>`_. 很有趣。
 
-   <a href="http://127.0.0.1:8089/reload" target="_blank"> http://127.0.0.1:8089/reload </a>
-
-这个在线 |crontab_edit| 很有趣。
-
-.. |crontab_edit| raw:: html
-
-   <a href="https://crontab.guru/" target="_blank"> Crontab 编辑器</a>
 
 任务队列
 ^^^^^^^^
