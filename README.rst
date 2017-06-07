@@ -83,7 +83,7 @@ add_task 方法接收的参数有 path, args, method, host, port，只有 path �
 
 path 为要访问的地址，args 是要传递给 path 的数据，它是一个字典，默认为空字符串，method 可为 GET 或 POST，默认为 GET。
 
-pro t默认为 8089，如果你在运行时指定了该参数，那么你需要提供该值给 add_task，host 参数允许你修改以访问非本地运行的 uCron。
+prot 默认为 8089，如果你在运行时指定了该参数，那么你需要提供该值给 add_task，host 参数允许你修改以访问非本地运行的 uCron。
 
 add_task 方法定义在 ext.py 中，它很简单且是该文件中唯一的内容。
 
