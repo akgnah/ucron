@@ -3,7 +3,7 @@ from setuptools import setup
 from ucron import __version__
 
 
-long_description = 'micro crontab and taskqueen'  # open('README.rst').read()
+long_description = open('README.rst').read()
 
 setup(name='ucron',
       version=__version__,
