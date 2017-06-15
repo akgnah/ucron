@@ -3,7 +3,7 @@ uCron
 
 uCron 是一个微型的执行定时任务（Crontab）和任务队列（Taskqueue）的小工具，易于安装和运行，配置简单且依赖少。
 
-如果你使用 Windows，没有 Crontab，这个小工具能为你提供类似的功能。
+特别地，如果你使用 Windows，没有 Crontab，这个小工具能为你提供类似的功能。当然它也可在 Linux 上工作。
 
 缘起
 ----
