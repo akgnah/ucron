@@ -174,7 +174,7 @@ def update_log(line):
         f.write(line)
 
 
-def claen_log():
+def clean_log():
     with io.open(conf.log, 'r', encoding='utf8') as f:
         logs = f.readlines()
     if len(logs) > conf.max * 2:
