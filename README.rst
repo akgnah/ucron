@@ -17,7 +17,7 @@ uCron 是一个微型的执行定时任务（Crontab）和任务队列（Task qu
 使用
 ----
 
-.. code-block:: python
+.. code-block:: bash
 
    python -m ucron
 
@@ -45,7 +45,7 @@ uCron 是一个微型的执行定时任务（Crontab）和任务队列（Task qu
 
 典型的使用方法可能是这样：
 
-.. code-block:: python
+.. code-block:: bash
 
    python -m ucron --cron ucron.tab
 
