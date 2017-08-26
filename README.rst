@@ -19,7 +19,7 @@ uCron 是一个微型的执行定时任务（Crontab）和任务队列（Task qu
 
 .. code-block:: bash
 
-   python -m ucron
+   $ python -m ucron
 
 这是最简单的使用方法，使用浏览器访问 http://127.0.0.1:8089/ 将会看到一个简单的欢迎页面。
 
@@ -47,7 +47,7 @@ uCron 是一个微型的执行定时任务（Crontab）和任务队列（Task qu
 
 .. code-block:: bash
 
-   python -m ucron --cron ucron.tab
+   $ python -m ucron --cron ucron.tab
 
 这会读取当前目录下的 ucron.tab 增加定时任务。指定的文件可使用相对或绝对路径。
 
@@ -98,7 +98,7 @@ uCron 中的任务队列有顺序队列和并发队列两种类型。程序在�
 
 .. code-block:: bash
 
-   python -m ucron --add 8089 ff-bot_seq seq
+   $ python -m ucron --add 8089 ff-bot_seq seq
 
 这会向 8089 端口运行着的 uCron 增加一个名为 ff-bot_seq 的顺序（seq）队列。
 
@@ -128,7 +128,7 @@ uCron 中的任务队列有顺序队列和并发队列两种类型。程序在�
 
 .. code-block:: bash
 
-   python -m ucron --del 8089 ff-bot_seq
+   $ python -m ucron --del 8089 ff-bot_seq
 
 这会删除刚才增加的 ff-bot_seq 队列。
 
