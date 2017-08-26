@@ -147,4 +147,6 @@ add_task、add_queue 和 del_queue 均定义在 ext.py 中，它们都很简单�
 
 杂项
 ----
-感谢使用，若有疑问或建议请 Email 联系我。
+这个小工具产生于我写饭否机器人的过程中，由于当时不知道已经存在很多优秀的类似工具，如 `schedule <https://github.com/dbader/schedule>`_ 和 `Celery <https://github.com/celery/celery>`_ ，所以重复造了轮子，但造轮子还是挺开心的。
+
+最后，感谢使用，若有疑问或建议请 Email 联系我。
