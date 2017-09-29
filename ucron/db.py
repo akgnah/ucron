@@ -23,7 +23,7 @@ class DB(Thread):
         self.cur = self.con.cursor()
 
         while True:
-            req, arg, res, throw = self.reqs.get()
+            req, arg, res = self.reqs.get()
             if req == '--close--':
                 break
             if req == '--commit--':
@@ -31,11 +31,8 @@ class DB(Thread):
 
             try:
                 self.cur.execute(req, arg)
-            except sqlite3.Error as sqlite3_ex:
-                if throw:
-                    raise sqlite3_ex
-                else:
-                    self.con.rollback()
+            except:
+                self.con.rollback()
 
             if self.cur.description:
                 for row in self.cur:
@@ -46,13 +43,13 @@ class DB(Thread):
 
         self.con.close()
 
-    def execute(self, req, arg=tuple(), throw=False):
+    def execute(self, req, arg=tuple()):
         res = Queue()
-        self.reqs.put((req, arg, res, throw))
+        self.reqs.put((req, arg, res))
 
-    def query(self, req, arg=tuple(), throw=False):
+    def query(self, req, arg=tuple()):
         res = Queue()
-        self.reqs.put((req, arg, res, throw))
+        self.reqs.put((req, arg, res))
 
         def iterwrapper():
             while True:
