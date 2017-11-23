@@ -3,6 +3,7 @@
 from __future__ import absolute_import
 
 import sys
+from numbers import Number
 
 py3k = sys.version_info.major > 2
 
@@ -27,6 +28,8 @@ else:  # 2.x
 def to_bytes(s, encoding='utf8'):
     if isinstance(s, unicode):
         return s.encode(encoding)
+    if isinstance(s, (bool, Number)):
+        return str(s).encode(encoding)
     return bytes('' if s is None else s)
 
 

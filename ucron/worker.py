@@ -4,8 +4,8 @@ from __future__ import absolute_import
 
 import time
 import uuid
-import datetime
 import threading
+from datetime import tzinfo, timedelta, datetime
 
 from ucron import conf, db, __version__
 from ucron.utils import request, urlencode, parse_qsl, Queue, to_string
@@ -14,18 +14,18 @@ stdout_q = Queue()
 lock = threading.Lock()
 
 
-class UTC(datetime.tzinfo):
+class UTC(tzinfo):
     def __init__(self, offset=0):
         self._offset = offset
 
     def utcoffset(self, dt):
-        return datetime.timedelta(hours=self._offset)
+        return timedelta(hours=self._offset)
 
     def tzname(self, dt):
         return 'UTC %+d:00' % self._offset
 
     def dst(self, dt):
-        return datetime.timedelta(hours=self._offset)
+        return timedelta(hours=self._offset)
 
 
 class Job:
@@ -81,14 +81,14 @@ def parse_crontab(line):
 
 
 def urlopen(path, args, method):
-    now = datetime.datetime.now(UTC(conf.utc)).strftime('%d/%b/%Y %H:%M:%S')
+    now = datetime.now(UTC(conf.utc)).strftime('%d/%b/%Y %H:%M:%S')
     try:
         path += '/' if path.count('/') < 3 else ''
         if method.upper() == 'POST':
             data = args.encode('utf8') if args else b'None'
         else:
             data = None
-            path = path + '?' + args if args else path
+            path += '?' + args if args else ''
         resp = request.urlopen(path, data)
         return '[%s] %s %s - %s' % (now, path, method, resp.code)
     except Exception as common_ex:
@@ -96,15 +96,15 @@ def urlopen(path, args, method):
 
 
 def now():
-    _now = datetime.datetime.now(UTC(conf.utc))
-    _now = {
-        'minute': _now.minute,
-        'hour': _now.hour,
-        'day': _now.day,
-        'month': _now.month,
-        'weekday': (_now.weekday() + 1) % 7  # Monday == 1 ... Saturday == 6, Sunday == 0
+    now = datetime.now(UTC(conf.utc))
+    now = {
+        'minute': now.minute,
+        'hour': now.hour,
+        'day': now.day,
+        'month': now.month,
+        'weekday': (now.weekday() + 1) % 7  # Monday == 1 ... Saturday == 6, Sunday == 0
     }
-    return _now
+    return now
 
 
 def sub_in(now, job):
@@ -121,7 +121,7 @@ def daemon_cron():
                 resp = urlopen(job['path'], job['args'], job['method'])
                 db.status.update(job['id'], resp)
                 stdout_q.put('Cron %s' % resp)
-        time.sleep(61 - datetime.datetime.now().second)
+        time.sleep(61 - datetime.now().second)
 
 
 def run_task(task):
