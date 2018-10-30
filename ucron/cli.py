@@ -117,7 +117,9 @@ def parse_args():
     parser = argparse.ArgumentParser(description='uCron - Micro(toy) Crontab and Task Queue', prog='python -m ucron',
                                      epilog='See https://github.com/akgnah/ucron/ for more details.')
 
-    parser.add_argument('--port', default='8089', metavar='number',
+    parser.add_argument('--host', default='127.0.0.1', metavar='host',
+                        help='specify host, default is 127.0.0.1')
+    parser.add_argument('--port', default='8089', metavar='port',
                         help='specify port number, default is 8089')
     parser.add_argument('--cron', metavar='file',
                         help='specify crontab file, required by crontab')

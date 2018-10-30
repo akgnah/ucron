@@ -29,6 +29,7 @@ uCron 是一个微型的执行定时任务（Crontab）和任务队列（Task qu
 
 ::
 
+   --host    指定程序运行的 IP，默认为 127.0.0.1。
    --port    指定程序运行的端口，默认为 8089。
    --cron    指定定时任务的配置文件，格式见 ucron.tab 或下文。
    --dbn     指定文件用于 SQLite，默认为 :memory:，即内存模式。
@@ -58,7 +59,7 @@ uCron 是一个微型的执行定时任务（Crontab）和任务队列（Task qu
 
 ::
 
-   */10 * * * * https://httpbin.org/post hello=world&text=test POST
+   */2 * * * * https://httpbin.org/post hello=world&text=test POST
 
 这是 ucron.tab 中的一行，它使用和 Crontab 类似的格式，每行为一个任务，每个任务有四个部分，使用空格分隔，最后两个部分均为可选。
 

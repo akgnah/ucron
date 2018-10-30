@@ -10,5 +10,5 @@ def save(args):
         value = getattr(args, key)
         if value and value != ':memory:':
             setattr(args, key, os.path.join(os.getcwd(), value))
-    setattr(args, 'host', 'http://127.0.0.1:%s' % args.port)
+    setattr(args, 'local', 'http://127.0.0.1:%s' % args.port)
     globals().update(args.__dict__)

@@ -178,13 +178,13 @@ def clean_log():
 
 def load_crontab():
     db.cron.empty()  # empty old cron
-    parse_crontab('%s %s/clean' % (conf.tab, conf.host))  # add clean task
+    parse_crontab('%s %s/clean' % (conf.tab, conf.local))  # add clean task
 
     if not conf.cron:  # nothing to do
         return
 
     if conf.reload:
-        parse_crontab('* * * * * %s/reload' % conf.host)  # add reload task
+        parse_crontab('* * * * * %s/reload' % conf.local)  # add reload task
 
     with open(conf.cron, 'rb') as f:
         for line in f.readlines():

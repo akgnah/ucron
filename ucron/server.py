@@ -165,7 +165,7 @@ def log():
 def start():
     if conf.quiet:
         print('Bottle v%s server starting up (using WSGIRefServer())...' % __version__)
-        print('Listening on http://127.0.0.1:%s/' % conf.port)
+        print('Listening on http://%s:%s/' % (conf.host, conf.port))
         print('Hit Ctrl-C to quit.')
 
-    app.run(host='127.0.0.1', port=conf.port, quiet=conf.quiet)  # start bottle
+    app.run(host=conf.host, port=conf.port, quiet=conf.quiet)  # start bottle
