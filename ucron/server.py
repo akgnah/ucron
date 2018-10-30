@@ -3,13 +3,12 @@
 from __future__ import absolute_import
 
 import os
-import json
 import threading
 
 from bottle import Bottle, request, template, redirect, __version__
 
-from ucron import db, conf, stpl, worker
-from ucron.utils import dict_encode, urlencode
+from ucron import db, conf, stpl, worker, __version__ as version
+from ucron.utils import dict_encode, urlencode, dumps
 
 app = Bottle()
 ctx = threading.local()
@@ -21,11 +20,6 @@ def flash():
     return tmp
 
 
-@app.route('/')
-def homepage():
-    return template(stpl.homepage, {'conf': conf})
-
-
 @app.route('/clean')
 def clean_log():
     worker.clean_log()
@@ -35,20 +29,22 @@ def clean_log():
 @app.route('/reload')
 def reload_cron():
     worker.load_crontab()
-    previous = request.headers.get('Referer', '/')
-    return template(stpl.reload_cron, previous=previous)
+    ctx.notice = '重新加载成功'
+    redirect('/status')
 
 
 @app.route('/add_task', 'POST')
 def add_task():
-    data = json.loads(request.body.read().decode('utf8'))
-    path = data.get('path')
-    args = data.get('args') or ''
-    method = data.get('method')
-    q_name = data.get('queue')
-    if args:
-        args = urlencode(dict_encode(args))
-    rowcount = db.task.push(path, args, method, q_name)
+    path = request.json.get('path')
+    args = request.json.get('args')
+    method = request.json.get('method')
+    name = request.json.get('name')
+    json = request.json.get('json')
+
+    if args or json:
+        args = dumps(args or json) if json else urlencode(dict_encode(args))
+
+    rowcount = db.task.push(path, args, method, name, int(bool(json)))
     return 'OK' if rowcount > 0 else 'Not Modified'
 
 
@@ -62,9 +58,9 @@ def taskq():
         for item in db.taskq.fetchall():
             length = db.task.length(item[0])
             task.append(list(item) + [length])
-        return json.dumps(task)
+        return dumps(task)
     elif opt == 'add':
-        name = request.query.get('name').strip()
+        name = request.query.name.strip()
         mode = request.query.get('mode', 'seq').strip()
         if name:
             rowcount = db.taskq.push(name, mode)
@@ -75,7 +71,7 @@ def taskq():
         else:
             ctx.notice = '名称不能为空'
     elif opt == 'del':
-        name = request.query.get('name').strip()
+        name = request.query.name.strip()
         rowcount = db.taskq.delete(name)
         if rowcount > 0:
             db.task.delete(name)
@@ -83,7 +79,7 @@ def taskq():
         else:
             ctx.notice = '删除队列失败'
     elif opt == 'cls':
-        name = request.query.get('name').strip()
+        name = request.query.name.strip()
         rowcount = db.task.delete(name)
         if rowcount > 0 or db.task.length(name) == 0:
             rowcount = 1  # fix cli
@@ -94,9 +90,11 @@ def taskq():
     if request.query.get('cli'):
         flash()
         return 'OK' if rowcount > 0 else 'Not Modified'
+
     redirect('/status')
 
 
+@app.route('/')
 @app.route('/status')
 def status():
     cron = []
@@ -117,7 +115,9 @@ def status():
         'cron': cron,
         'task': task,
         'conf': conf,
-        'notice': flash()
+        'notice': flash(),
+        'nav': ('/log', '查看日志'),
+        'version': version
     }
 
     return template(stpl.status, context)
@@ -154,7 +154,9 @@ def log():
         'page': page,
         'count': len(data),
         'sort': neg_sort[sort],
-        'other': neg_mode[mode]
+        'other': neg_mode[mode],
+        'nav': ('/status', '查看状态'),
+        'version': version
     }
 
     return template(stpl.log, context)

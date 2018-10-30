@@ -8,7 +8,7 @@ long_description = open('README.rst', 'rb').read().decode('utf8')
 
 setup(name='ucron',
       version=__version__,
-      description='micro crontab and task queue',
+      description='A micro Crontab & Task Queue for Python Web.',
       author='Akgnah',
       author_email='1024@setq.me',
       url='http://github.com/akgnah/ucron',

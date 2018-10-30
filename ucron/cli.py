@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*
 from __future__ import absolute_import
 
-import json
 import argparse
 
 from ucron import conf
-from ucron.utils import request, urlencode, URLError
+from ucron.utils import request, urlencode, URLError, loads
 
 
 class Check_Quiet(argparse.Action):
@@ -107,7 +106,7 @@ class List_Queue(argparse.Action):
         url = 'http://127.0.0.1:%s/taskq?opt=list' % values  # port
         try:
             resp = request.urlopen(url)
-            for item in json.loads(resp.read().decode()):
+            for item in loads(resp.read().decode()):
                 print('%-16s%4s%4s' % tuple(item))
         except(URLError):
             print('Connection refused. Please check port.')

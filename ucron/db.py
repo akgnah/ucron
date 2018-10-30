@@ -2,12 +2,11 @@
 # -*- coding: utf-8 -*
 from __future__ import absolute_import
 
-import json
 import sqlite3
 from threading import Thread
 
 from ucron import conf
-from ucron.utils import Queue, iterbetter
+from ucron.utils import Queue, iterbetter, dumps, loads
 
 
 class DB(Thread):
@@ -75,9 +74,8 @@ class Cron(DB):
         self.commit()
 
     def push(self, _id, path, args, method, schedule):
-        schedule = json.dumps(schedule)
         rowcount = self.query("insert into cron (id, path, args, method, schedule) \
-        values (?, ?, ?, ?, ?)", (_id, path, args, method, schedule)).first()
+        values (?, ?, ?, ?, ?)", (_id, path, args, method, dumps(schedule))).first()
         self.commit()
         return rowcount
 
@@ -85,7 +83,7 @@ class Cron(DB):
         rows = []
         for row in self.query("select id, path, args, method, schedule from cron"):
             job = dict(zip(['id', 'path', 'args', 'method'], row[:-1]))
-            job.update(json.loads(row[-1]))
+            job.update(loads(row[-1]))
             rows.append(job)
         return rows
 
@@ -144,39 +142,39 @@ class Task(DB):
     def __init__(self, dbn):
         DB.__init__(self, dbn)
         self.execute("create table task (path blob, args text, method blob, \
-        q_name blob, id integer primary key)")
+        name blob, json integer, id integer primary key)")
         self.commit()
 
-    def push(self, path, args, method, q_name):
-        rowcount = self.query("insert into task (path, args, method, q_name) \
-        values (?, ?, ?, ?)", (path, args, method, q_name)).first()
+    def push(self, path, args, method, name, json):
+        rowcount = self.query("insert into task (path, args, method, name, json) \
+        values (?, ?, ?, ?, ?)", (path, args, method, name, json)).first()
         self.commit()
         return rowcount
 
-    def pop(self, q_name):
-        row = self.query("select path, args, method, id from task \
-        where q_name = ? order by id", (q_name,)).first()
+    def pop(self, name):
+        row = self.query("select path, args, method, json, id from task \
+        where name = ? order by id", (name,)).first()
         if row:
             self.query("delete from task where id = ?", (row[-1],))
             self.commit()
         return row
 
-    def fetchall(self, q_name):
-        rows = self.query("select path, args, method, id from task \
-        where q_name = ? order by id", (q_name,))
+    def fetchall(self, name):
+        rows = self.query("select path, args, method, json, id from task \
+        where name = ? order by id", (name,))
         if rows:
-            self.query("delete from task where q_name = ?", (q_name,))
+            self.query("delete from task where name = ?", (name,))
             self.commit()
         return rows
 
-    def delete(self, q_name):
-        rowcount = self.query("delete from task where q_name = ?", (q_name,)).first()
+    def delete(self, name):
+        rowcount = self.query("delete from task where name = ?", (name,)).first()
         self.commit()
         return rowcount
 
-    def length(self, q_name='%'):
+    def length(self, name='%'):
         return self.query("select count(*) from task \
-        where q_name = ?", (q_name,)).first()[0]
+        where name = ?", (name,)).first()[0]
 
 
 def initalize():

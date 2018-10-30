@@ -1,2 +1,2 @@
-*/30 * * * * http://setq.me/books
-*/2 * * * * http://setq.me/books id=home2&text=测试 POST
+*/5 * * * * https://httpbin.org/get
+*/2 * * * * https://httpbin.org/post hello=world&text=test POST

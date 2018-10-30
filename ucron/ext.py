@@ -2,18 +2,17 @@
 # -*- coding: utf-8 -*
 from __future__ import absolute_import
 
-import json
-
-from ucron.utils import request, urlencode, URLError
+from ucron.utils import request, urlencode, URLError, dumps, unicode
 
 
-def add_task(path, args={}, method='GET', queue='default_seq', port='8089', host='127.0.0.1'):
-    if not isinstance(args, dict):
-        raise Exception('TypeError: argument args: expected a dict')
-    req = request.Request('http://%s:%s/add_task' % (host, port))
-    data = {'path': path, 'args': args, 'method': method, 'queue': queue}
+def add_task(path, args='', method='GET', name='default_seq', port='8089', host='127.0.0.1', json=None):
+    if args != '' and not isinstance(args, dict):
+        raise Exception('TypeError: Argument args should be dict.')
+    headers = {'Content-Type': 'application/json'}
+    req = request.Request('http://%s:%s/add_task' % (host, port), headers=headers)
+    data = {'path': path, 'args': args, 'method': method, 'name': name, 'json': json}
     try:
-        resp = request.urlopen(req, json.dumps(data).encode('utf8'))
+        resp = request.urlopen(req, dumps(data).encode('utf8'))
         return resp.read().decode()
     except(URLError):
         raise Exception('Connection refused. Please check host or port.')

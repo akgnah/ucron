@@ -4,6 +4,10 @@ from __future__ import absolute_import
 
 import sys
 from numbers import Number
+try:
+    from ujson import dumps, loads
+except ImportError:
+    from json import dumps, loads
 
 py3k = sys.version_info.major > 2
 
@@ -50,11 +54,11 @@ def dict_encode(d, encoding='utf8'):
 # Copy from https://github.com/webpy/webpy/blob/master/web/utils.py
 class IterBetter:
     """
-    Returns an object that can be used as an iterator
-    but can also be used via __getitem__ (although it
-    cannot go backwards -- that is, you cannot request
+    Returns an object that can be used as an iterator 
+    but can also be used via __getitem__ (although it 
+    cannot go backwards -- that is, you cannot request 
     `iterbetter[0]` after requesting `iterbetter[1]`).
-
+    
         >>> import itertools
         >>> c = iterbetter(itertools.count())
         >>> c[1]
@@ -84,7 +88,7 @@ class IterBetter:
         >>> list(c)
         []
     """
-    def __init__(self, iterator):
+    def __init__(self, iterator): 
         self.i, self.c = iterator, 0
 
     def first(self, default=None):
@@ -101,28 +105,31 @@ class IterBetter:
     def list(self):
         return list(self)
 
-    def __iter__(self):
+    def __iter__(self): 
         if hasattr(self, "_head"):
             yield self._head
 
         while 1:
-            yield next(self.i)
+            try:
+                yield next(self.i)
+            except StopIteration:
+                return
             self.c += 1
 
     def __getitem__(self, i):
         # todo: slices
-        if i < self.c:
+        if i < self.c: 
             raise IndexError("already passed " + str(i))
         try:
-            while i > self.c:
+            while i > self.c: 
                 next(self.i)
                 self.c += 1
             # now self.c == i
             self.c += 1
             return next(self.i)
-        except StopIteration:
+        except StopIteration: 
             raise IndexError(str(i))
-
+            
     def __nonzero__(self):
         if hasattr(self, "__len__"):
             return self.__len__() != 0

@@ -80,16 +80,20 @@ def parse_crontab(line):
     db.cron.push(job_id, job.path, job.args, job.method, schedule)
 
 
-def urlopen(path, args, method):
+def urlopen(path, args, method, json=False):
     now = datetime.now(UTC(conf.utc)).strftime('%d/%b/%Y %H:%M:%S')
     try:
+        headers = {'User-Agent': 'uCron v%s' % __version__}
         path += '/' if path.count('/') < 3 else ''
-        if method.upper() == 'POST':
-            data = args.encode('utf8') if args else b'None'
+        if method.upper() == 'POST' or json:
+            method = 'POST'
+            data = args.encode('utf8') if args else b''
+            if json:
+                headers['Content-Type'] = 'application/json'
         else:
             data = None
             path += '?' + args if args else ''
-        resp = request.urlopen(path, data)
+        resp = request.urlopen(request.Request(path, headers=headers), data)
         return '[%s] %s %s - %s' % (now, path, method, resp.code)
     except Exception as common_ex:
         return '[%s] %s %s - %s' % (now, path, method, common_ex)
@@ -121,7 +125,7 @@ def daemon_cron():
                 resp = urlopen(job['path'], job['args'], job['method'])
                 db.status.update(job['id'], resp)
                 stdout_q.put('Cron %s' % resp)
-        time.sleep(61 - datetime.now().second)
+        time.sleep(60.1 - datetime.now().second)
 
 
 def run_task(task):
@@ -129,16 +133,16 @@ def run_task(task):
     stdout_q.put('Task %s' % resp)
 
 
-def select_task(q_name, mode):
+def select_task(name, mode):
     if mode == 'seq':
         while True:
-            task = db.task.pop(q_name)
+            task = db.task.pop(name)
             if not task:
                 break
             run_task(task)
     else:
         threads = []
-        for task in db.task.fetchall(q_name):
+        for task in db.task.fetchall(name):
             threads.append(threading.Thread(target=run_task, args=(task,)))
         for t in threads:
             t.start()
@@ -147,11 +151,11 @@ def select_task(q_name, mode):
 def daemon_task():
     while True:
         threads = []
-        for q_name, mode in db.taskq.fetchall():
-            threads.append(threading.Thread(target=select_task, args=(q_name, mode)))
+        for name, mode in db.taskq.fetchall():
+            threads.append(threading.Thread(target=select_task, args=(name, mode)))
         for t in threads:
             t.start()
-        time.sleep(0.1)
+        time.sleep(0.01)
 
 
 def _stdout():
