@@ -1,6 +1,19 @@
 uCron
 =====
 
+.. image:: https://img.shields.io/travis/akgnah/ucron/master.svg
+    :target: https://travis-ci.org/akgnah/ucron
+
+.. image:: https://img.shields.io/pypi/v/ucron.svg
+    :target: https://pypi.python.org/pypi/ucron
+
+.. image:: https://img.shields.io/pypi/l/ucron.svg
+    :target: https://pypi.python.org/pypi/ucron
+
+.. image:: https://img.shields.io/badge/code_style-pep8-orange.svg
+    :target: https://www.python.org/dev/peps/pep-0008
+
+
 uCron 是一个微型的执行定时任务（Crontab）和任务队列（Task queue）的小工具，易于安装和运行，配置简单且依赖少。
 
 特别地，如果你使用 Windows，没有 Crontab，这个小工具能为你提供类似的功能。当然它也可在 Linux 上工作。

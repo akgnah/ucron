@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*
 from __future__ import absolute_import
 
-from ucron.utils import request, urlencode, URLError, dumps, unicode
+from ucron.utils import request, urlencode, URLError, dumps
 
 
 def add_task(path, args='', method='GET', name='default_seq', port='8089', host='127.0.0.1', json=None):

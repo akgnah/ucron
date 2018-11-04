@@ -30,7 +30,7 @@ class DB(Thread):
 
             try:
                 self.cur.execute(req, arg)
-            except:
+            except Exception:
                 self.con.rollback()
 
             if self.cur.description:
